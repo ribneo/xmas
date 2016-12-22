@@ -1,0 +1,286 @@
+<html>
+<head>
+<title></title>
+
+
+<link href="https://fonts.googleapis.com/css?family=Mountains+of+Christmas" rel="stylesheet">
+
+<style>
+	html {
+		padding:0px;
+		margin:0px;
+		background-color:#C31D43;
+		color:#FFF;
+	}
+
+	body {
+		padding:50px;
+		margin:0px;
+		background-image: radial-gradient(white 15%, transparent 16%),
+		radial-gradient(white 15%, transparent 16%);
+		background-size:60px 60px;
+		background-position: 0 0, 30px 30px;
+		color:#000;
+		position:relative;
+		font-family: 'Mountains of Christmas', cursive;
+	}
+
+	.video-foreground,
+	.video-background iframe {
+	  	position: absolute;
+	  	top: 0;
+	  	left: 0;
+	  	width: calc(100%);
+	  	height: calc(100%);
+	  	pointer-events: none;
+	  	box-sizing:border-box;
+	  	overflow: hidden;
+
+	}
+
+	.video-background iframe {
+		width: calc(100% + 100px);
+	  	height: calc(100% + 100px);
+		margin:-50px;
+	}
+
+	.wrapper {
+		position:relative;
+		height:100%;
+		width:100%;
+		background-color:#000000;
+		box-sizing:border-box;
+	}
+
+	.makeitsnow {
+		padding:10px;
+		/*border:20px solid #8A1933;
+		border-top-color:#69192B;
+		border-left-color:#69192B;
+		border-bottom-color:#8A1933;
+		border-right-color:#8A1933;;*/
+		position:relative;
+		height:100%;
+		width:100%;
+		box-sizing:border-box;
+	}
+
+	#card {
+		position:relative;
+		height:100%;
+		width:100%;
+		border:5px solid white;
+		box-sizing:border-box;
+	}
+
+	#tag {
+		font-size:40px;
+		font-weight:bold;
+		display: block;
+		border-right: 50px solid transparent;
+		background: tan;
+		height: 100px;
+
+		max-width: 200px;
+		position: absolute;
+		top:10%;
+		left:2%;
+		transform: rotate(-30deg);
+		vertical-align:middle;
+	}
+	#tag p {
+		margin:0px;
+		padding:18px 0px 26px 0px;
+
+	}
+	#tag:before {
+		border-right: 50px solid tan;
+		border-top: 50px solid transparent;
+		border-left: 50px solid transparent;
+		border-bottom: 50px solid transparent;
+		position: absolute;
+		top: 0;
+		left: -100px;
+		content: '';
+		display: block;
+	}
+	#tag:after {
+		border-right: 50px solid transparent;
+		border-top: 50px solid tan;
+		border-left: 50px solid tan;
+		border-bottom: 50px solid tan;
+		position: absolute;
+		top: 0;
+		right: -100px;
+		content: '';
+		display: block;
+	}
+
+	#sentiment {
+
+		font-size:50px;
+		font-weight:bold;
+		background-color:#FFF;
+		padding:40px;
+		position:absolute;
+		top:60%;
+		left:50%;
+		text-align:center;
+
+	}
+
+	#signoff {
+		font-size:40px;
+		font-weight:bold;
+		position:absolute;
+		bottom:5%;
+		right:5%;
+		color:#FFF;
+		text-shadow: 0px 1px 2px rgba(0, 0, 0, 1);
+	}
+</style>
+
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+
+		// Middle align
+		$('#sentiment').css('margin-left', - $('#sentiment').outerWidth() /2);
+		$('#sentiment').show();
+
+		// Make it Snow!
+		var particleCount = 300;
+		var particleMax   = 1000;
+		var element       = document.querySelector('.makeitsnow');
+		var canvas        = document.createElement('canvas');
+		var ctx           = canvas.getContext('2d');
+		var width         = element.clientWidth;
+		var height        = element.clientHeight;
+		var i             = 0;
+		var active        = true;
+		var snowflakes    = [];
+		var snowflake;
+
+		canvas.style.position = 'absolute';
+		canvas.style.left = canvas.style.top = '0';
+
+		var Snowflake = function () {
+		  	this.x = 0;
+		  	this.y = 0;
+		  	this.vy = 0;
+			this.vx = 0;
+		  	this.r = 0;
+
+		  	this.reset();
+		};
+
+		Snowflake.prototype.reset = function() {
+		  	this.x = Math.random() * width;
+		  	this.y = Math.random() * -height;
+		  	this.vy = 1 + Math.random() * 3;
+		  	this.vx = 0.5 - Math.random();
+		  	this.r = 1 + Math.random() * 2;
+		  	this.o = 0.5 + Math.random() * 0.5;
+		};
+
+		function generateSnowFlakes() {
+		  	snowflakes = [];
+		  	for (i = 0; i < particleMax; i++) {
+		    	snowflake = new Snowflake();
+		    	snowflake.reset();
+		    	snowflakes.push(snowflake);
+		  	}
+		}
+
+		generateSnowFlakes();
+
+		function update() {
+		  	ctx.clearRect(0, 0, width, height);
+
+		  	if (!active) {      
+		    	return;
+		  	}
+
+		  	for (i = 0; i < particleCount; i++) {
+		    	snowflake = snowflakes[i];
+		    	snowflake.y += snowflake.vy;
+		    	snowflake.x += snowflake.vx;
+
+		    	ctx.globalAlpha = snowflake.o;
+		    	ctx.beginPath();
+		    	ctx.arc(snowflake.x, snowflake.y, snowflake.r, 0, Math.PI * 2, false);
+		    	ctx.closePath();
+		    	ctx.fill();
+
+		    	if (snowflake.y > height) {
+		      		snowflake.reset();
+		    	}
+		  	}
+
+		  	requestAnimFrame(update);
+		}
+
+		function onResize() {
+		  	width = element.clientWidth;
+		  	height = element.clientHeight;
+		  	canvas.width = width;
+		  	canvas.height = height;
+		  	ctx.fillStyle = '#FFF';
+			requestAnimFrame(update);
+		}
+
+		window.requestAnimFrame = (function() {
+		  return  window.requestAnimationFrame       ||
+		          window.webkitRequestAnimationFrame ||
+		          window.mozRequestAnimationFrame    ||
+		          function( callback ){
+		            window.setTimeout(callback, 1000 / 60);
+		          };
+		})();
+
+		onResize();
+		window.addEventListener('resize', onResize, false);
+
+		element.appendChild(canvas);
+
+
+	});
+</script>
+
+
+</head>
+
+<body>
+
+	<div class="wrapper">
+		<div class="video-background" style="background-color:#FFFFFF">
+		    <div class="video-foreground">
+		      <iframe src="https://www.youtube.com/embed/tU94YbgCpls?controls=0&showinfo=0&rel=0&autoplay=1&loop=1&playlist=tU94YbgCpls" frameborder="0" allowfullscreen></iframe>
+		    </div>
+	  </div>
+
+		<div id="player" class="overlay makeitsnow">
+
+			<div id="card">
+
+				 <div id="tag">
+			       <p class="tag-front">
+			        To @Name
+			       </p>
+			     </div>
+
+				<div id="greeting">To @Name</div>
+				<div id="sentiment" style="display:none;">May the Force be with you<br /> this Christmas!</div>
+				<div id="signoff">From @Name</div>
+			</div>
+		</div>
+	</div>
+
+</body>
+
+
+
+
+</html>
